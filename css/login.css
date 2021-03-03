@@ -1,0 +1,76 @@
+.main {
+    margin-top: 150px;
+}
+
+.main h2, .main h2 {
+    text-align: center;
+    font-size: 25px;
+    margin-top: 10px;
+}
+
+.main h2:nth-child(2) {
+    color: rgb(132, 132, 132);
+}
+
+.content {
+    display: flex;
+    width: 950px;
+    margin: 50px auto;
+}
+
+.left {
+    width: 500px;
+    border-right: 1px solid #d7d7d7;
+}
+
+.right {
+    position: relative;
+    width: 450px;
+    padding-top: 100px;
+}
+
+.left input {
+    height: 62px;
+    font-size: 17px;
+    color: #b3b3b3;
+    margin-left: 15px;
+    width: 300px;
+    border-radius: 30px;
+    border: none;
+    margin-bottom: 32px;
+    text-indent: 30px;
+}
+
+.left input:nth-child(3) {
+    text-indent: 0;
+    background-color: rgb(175, 38, 77);
+    color: #fff;
+}
+
+.right label {
+    display: block;
+    width: 450px;
+    height: 40px;
+    text-align: center;
+    line-height: 30px;
+    font-size: 20px;
+}
+
+/*.right input {*/
+/*    display: none*/
+/*}*/
+
+.register{
+    margin-left: 15px;
+    cursor: pointer;
+}
+.delta{
+    width: 20px;
+    position: absolute;
+    height: 20px;
+    border: 10px solid transparent;
+    border-right: 20px solid rgb(175, 38, 77);
+    left: 290px;
+    top: 105px;
+    transition: top 0.3s;
+}

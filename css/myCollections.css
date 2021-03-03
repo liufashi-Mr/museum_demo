@@ -1,0 +1,117 @@
+.bg {
+    height: 400px;
+    background: url("../images/bg.jpg") no-repeat;
+    background-size: 100% auto;
+}
+
+.collections {
+    width: 1200px;
+    margin: 40px auto;
+    height: 600px;
+}
+
+.collections li {
+    float: left;
+    width: 23.5%;
+    background-color: #fff;
+    overflow: hidden;
+    transition: all 0.6s;
+    margin-right: 2%;
+    margin-bottom: 55px;
+    box-shadow: 0 0 8px #ccc;
+}
+
+.collections li:hover {
+    background-color: #f0f0f0;
+}
+
+.collections li:hover img {
+    transform: scale(1.2);
+}
+
+.collections li:nth-child(4n) {
+    margin-right: 0;
+}
+
+.img img, .img {
+    display: block;
+    height: 310px;
+    overflow: hidden;
+    transition: all 0.6s;
+    width: 100%;
+}
+
+.collections div {
+    width: 100%;
+    padding: 28px 20px;
+}
+
+.name {
+    margin: 0 0 15px;
+    font-size: 20px;
+    color: #313131;
+    font-weight: bold;
+}
+
+.age, .size {
+    color: #4a4a4a;
+    font-size: 17px;
+}
+
+.size {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.search {
+    margin: 40px 0 45px 0;
+    display: flex;
+
+}
+
+#name, #age,#search{
+    font-size: 17px;
+    padding: 0 22px;
+    border: 1px solid #bdbdbd;
+    height: 46px;
+    width: 297px;
+    margin-right: 25px;
+}
+#name input, #age input{
+    width: 200px;
+    height: 44px;
+    border: none;
+    font-size: 17px;
+    font-weight: lighter;
+}
+#search{
+    line-height: 46px;
+    font-size: 20px;
+    color: #fff;
+    background-color: #af264d;
+    width: 130px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+.type{
+    width: 1020px;
+    height: 52px;
+    margin: 0 0 60px;
+    display: flex;
+}
+.type li,.all{
+    height: 52px;
+    margin: 0 10px;
+    padding: 0 20px;
+    line-height: 52px;
+    font-size: 20px;
+    border: 1px solid #000;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.type li:hover,.all:hover{
+    background-color: #000;
+    color: #fff;
+}

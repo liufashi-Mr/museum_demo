@@ -1,0 +1,63 @@
+.content{
+    width: 800px;
+    height: 800px;
+    padding: 20px;
+}
+.user{
+    margin-left: 50px;
+}
+.user,.user img{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+.desc{
+    height: 100px;
+    width: 200px;
+    font-size: 24px;
+    text-align: center;
+    line-height: 100px;
+}
+.left{
+    width: 200px;
+    margin-top: 200px;
+    height: 200px;
+    float: left;
+}
+.right{
+    margin-top: 200px;
+    width: 400px;
+    height: 400px;
+    display: none;
+    float: left;
+    margin-left: 100px;
+    overflow: auto;
+}
+h2{
+    height: 50px;
+    line-height: 50px;
+}
+.manage{
+    width: 80px;
+    height: 30px;
+    border: 1px solid #af264d;
+    border-radius: 4px;
+    font-size: 16px;
+}
+.admin{
+    overflow: auto;
+}
+.admin li{
+    height: 40px;
+    padding: 5px 15px;
+    font-size: 20px;
+    border: 1px solid #af264d;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+.del{
+    color: red;
+    float: right;
+    cursor: pointer;
+    display: none;
+}

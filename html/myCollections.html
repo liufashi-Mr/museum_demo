@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/styleAll.css">
+    <link rel="stylesheet" href="./font_2167033_whtd30rdjz/iconfont.css">
+    <link rel="stylesheet" href="../css/myCollections.css">
+</head>
+<body>
+<nav>
+    <div class="container">
+        <div class="head_top">
+            <div class="login">
+                <span>登录 / 注册 </span>
+                <span class="iconfont" style="font-size: 20px">&#xe618;</span>
+            </div>
+        </div>
+        <div class="head_bottom">
+            <div>Zou's Museum</div>
+            <ul class="items">
+                <li class="index">首页</li>
+                <li class="myCollections">藏品</li>
+                <li class="library">库房</li>
+                <li class="record">事故登记</li>
+                <li class="analyze">藏品分析</li>
+                <li class="user&system">用户和系统管理</li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!--待添加搜索功能-->
+<div class="bg"></div>
+<div class="container">
+    <div class="search">
+        <div id="name">
+            <label>名称: </label>
+            <input type="text" class="">
+        </div>
+        <div id="age">
+            <label>年代: </label>
+            <input type="text">
+        </div>
+        <div id="search">搜索</div>
+    </div>
+    <ul class="type">
+        <li>陶瓷器类</li>
+        <li>金属器类</li>
+        <li>石器玉器类</li>
+        <li>书籍字画等纸质文物</li>
+        <li>杂项类文物</li>
+        <div class="all">全部</div>
+    </ul>
+    <ul class="collections">
+
+    </ul>
+</div>
+<script src="../js/scriptAll.js"></script>
+<script>
+    let collections = document.querySelector('.collections');
+    let all = document.querySelector('.all');
+    let type = document.querySelector('.type');
+    let search=document.querySelector('#search');
+    let name=document.querySelector('#name input');
+    let age=document.querySelector('#age input');
+    search.onclick=searchCollections;
+    age.onkeyup=function (e) {
+        if(e.keyCode==13){
+            searchCollections();
+        }
+    }
+    name.onkeyup=function (e) {
+        if(e.keyCode==13){
+            searchCollections();
+        }
+    }
+    function searchCollections(){
+        $ajax_({
+            url: baseUrl + '/search',
+            method: 'GET',
+            data: {
+                name:name.value,
+                age:age.value,
+            },
+            success: function (data) {
+                data = JSON.parse(data);
+                render(data)
+            }
+        })
+    }
+    allCollections();
+    all.style.color = '#fff';
+    all.style.backgroundColor = '#000';
+    for (let i = 0; i < type.children.length; i++) {
+        type.children[i].onclick=function () {
+            for (let j = 0; j < type.children.length; j++) {
+                type.children[j].style.color = '';
+                type.children[j].style.backgroundColor = '';
+            }
+            this.style.color = '#fff';
+            this.style.backgroundColor = '#000';
+            let temp = type.children[i];
+            $ajax_({
+                url: baseUrl + '/collections',
+                method: 'GET',
+                data: {},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    let newData=[];
+                    newData=data.filter((item)=>item.type==temp.innerHTML);
+                    render(newData)
+                }
+            })
+        }
+    }
+    all.onclick = function () {
+        allCollections();
+        for (let i = 0; i < type.children.length; i++) {
+            type.children[i].style.color = '';
+            type.children[i].style.backgroundColor = '';
+        }
+        this.style.color = '#fff';
+        this.style.backgroundColor = '#000';
+    }
+    function allCollections() {
+        $ajax_({
+            url: baseUrl + '/collections',
+            method: 'GET',
+            data: {},
+            success: function (data) {
+                data = JSON.parse(data);
+                render(data);
+            }
+        })
+    }
+
+    function render(data) {
+        let template = '';
+        for (let i = 0; i < data.length; i++) {
+            template += `<li data-id="${data[i].id}">
+             <span class="img"><img src="${data[i].img_url}" alt=""></span>
+            <div>
+                <p class="name">${data[i].name}</p>
+                <p class="age">${data[i].age}</p>
+                <p class="size">${data[i].size}</p>
+            </div>
+        </li>`
+        }
+        collections.innerHTML = template;
+        for (let i = 0; i < collections.children.length; i++) {
+            collections.children[i].addEventListener('click', function () {
+                if (sessionStorage.getItem('token')) {
+                    sessionStorage.setItem('id', this.getAttribute('data-id'));
+                    location.href = 'detail.html'
+                } else {
+                    alert('请先登录!')
+                    location.href = 'login.html'
+                }
+            })
+        }
+    }
+</script>
+</body>
+</html>

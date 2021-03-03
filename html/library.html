@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/styleAll.css">
+    <link rel="stylesheet" href="./font_2167033_whtd30rdjz/iconfont.css">
+    <link rel="stylesheet" href="../css/library.css">
+</head>
+<body>
+<nav>
+    <div class="container">
+        <div class="head_top">
+            <div class="login">
+                <span>登录 / 注册 </span>
+                <span class="iconfont" style="font-size: 20px">&#xe618;</span>
+            </div>
+        </div>
+        <div class="head_bottom">
+            <div>Zou's Museum</div>
+            <ul class="items">
+                <li class="index">首页</li>
+                <li class="myCollections">我的藏品</li>
+                <li class="library">库房</li>
+                <li class="record">事故登记</li>
+                <li class="analyze">藏品分析</li>
+                <li class="user&system">用户和系统管理</li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="bg"></div>
+<div class="container content">
+    <ul class="recordContent">
+        <li></li>
+    </ul>
+    <div class="addLibrary">
+    </div>
+    <form action="" class="add">
+        <div><span class="label">name:</span><input type="text" id="addName"></div>
+        <div><span class="label">size:</span><input type="text" id="size"></div>
+        <div><span class="label">image:</span><input type="text" id="image"></div>
+        <div><span class="label">age:</span><input type="text" id="age"></div>
+        <div><span class="label">integrity:</span><input type="text" id="integrity"></div>
+        <div><span class="label">type:</span><select name="" id="type">
+            <option value="陶瓷器类">陶瓷器类</option>
+            <option value="金属器类">金属器类</option>
+            <option value="石器玉器类">石器玉器类</option>
+            <option value="书籍字画等纸质文物">书籍字画等纸质类文物</option>
+            <option value="杂项类文物">杂项类文物</option>
+        </select></div>
+        <div><span class="label">describe:</span><textarea name="" id="describe" cols="30" rows="10"></textarea></div>
+        <button class="addEnsure">确定</button>
+        <button class="addCancel">取消</button>
+    </form>
+    <div class="removeLibrary">
+    </div>
+    <form action="" class="remove">
+        <div><span class="label">name:</span><input type="text" id="removeName"></div>
+        <div><span class="label">id:</span><input type="text" id="removeId"></div>
+        <button class="removeEnsure">确定</button>
+        <button class="removeCancel">取消</button>
+    </form>
+</div>
+<script src="../js/scriptAll.js"></script>
+<script>
+    let addLibrary = document.querySelector('.addLibrary');
+    let removeLibrary = document.querySelector('.removeLibrary');
+    let add = document.querySelector('.add');
+    let remove = document.querySelector('.remove');
+    let addEnsure = document.querySelector('.addEnsure');
+    let addCancel = document.querySelector('.addCancel');
+    let removeEnsure = document.querySelector('.removeEnsure');
+    let removeCancel = document.querySelector('.removeCancel');
+    let addName = document.getElementById('addName');
+    let size = document.getElementById('size');
+    let age = document.getElementById('age');
+    let type = document.getElementById('type');
+    let image = document.getElementById('image');
+    let describe = document.getElementById('describe');
+    let removeName = document.getElementById('removeName');
+    let removeId = document.getElementById('removeId');
+    let recordContent = document.querySelector('.recordContent');
+    let integrity = document.getElementById('integrity');
+    addLibrary.onclick = function () {
+        sink(this);
+        remove.className = 'add';
+        sessionStorage.getItem('token') == 'Mr.zou' ? add.className += ' locAdd' : recordContent.innerHTML = '你不是管理员,无法进行此操作';
+    }
+    removeLibrary.onclick = function () {
+        sink(this);
+        add.className = 'add';
+        sessionStorage.getItem('token') == 'Mr.zou' ? remove.className += ' locRemove' : recordContent.innerHTML = '你不是管理员,无法进行此操作';
+    }
+    addCancel.onclick = function (e) {
+        e.preventDefault();
+        record()
+        add.className = 'add';
+    }
+    removeCancel.onclick = function (e) {
+        e.preventDefault();
+        record()
+        remove.className = 'add';
+    }
+    addEnsure.onclick = function (e) {
+        e.preventDefault();
+        $ajax_({
+            url: baseUrl + '/add',
+            method: 'GET',
+            data: {
+                name: addName.value,
+                size: size.value,
+                img_url: image.value,
+                age: age.value,
+                integrity: integrity.value,
+                type: type.options[type.selectedIndex].value,
+                describe: describe.value,
+            },
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.code) {
+                    alert('入库成功!');
+                    for (let i = 0; i < add.elements.length; i++) {
+                        add.elements[i].value = ''
+                    }
+                } else {
+                    alert('藏品名重复!');
+                }
+                ;
+            }
+        })
+    }
+    removeEnsure.onclick = function (e) {
+        e.preventDefault();
+        $ajax_({
+            url: baseUrl + '/remove',
+            method: 'GET',
+            data: {
+                name: removeName.value,
+                id: removeId.value,
+            },
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.code) {
+                    alert('出库成功!');
+                    for (let i = 0; i < add.elements.length; i++) {
+                        add.elements[i].value = ''
+                    }
+                } else {
+                    alert('藏品信息有误!')
+                }
+            }
+        })
+    }
+    record();
+
+    function record() {
+        $ajax_({
+            url: baseUrl + '/getRecord',
+            method: 'GET',
+            data: {},
+            success: function (data) {
+                data = JSON.parse(data);
+                render(data);
+            }
+        })
+    }
+
+    function sink(dom) {
+        setTimeout(() => {
+            dom.style.transform = 'translate(0,3px)';
+            setTimeout(() => dom.style.transform = 'translate(0,0px)', 200)
+        },)
+    }
+
+    function render(data) {
+        let template = '';
+        for (let i = 0; i < data.length; i++) {
+            template += `<li>藏品:&nbsp;${data[i].name}&nbsp;&nbsp;编号:${data[i].id}&nbsp;&nbsp;于&nbsp;${data[i].infor}&nbsp;${data[i].type}</li>`;
+        }
+        recordContent.innerHTML = template;
+    }
+</script>
+
+</body>
+</html>

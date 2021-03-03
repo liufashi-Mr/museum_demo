@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/styleAll.css">
+    <link rel="stylesheet" href="./font_2167033_whtd30rdjz/iconfont.css">
+</head>
+<style>
+    .highcharts-credits{
+        display: none;
+    }
+</style>
+<body>
+<nav>
+    <div class="container">
+        <div class="head_top">
+            <div class="login">
+                <span>登录 / 注册 </span>
+                <span class="iconfont" style="font-size: 20px">&#xe618;</span>
+            </div>
+        </div>
+        <div class="head_bottom">
+            <div>Zou's Museum</div>
+            <ul class="items">
+                <li class="index">首页</li>
+                <li class="myCollections">我的藏品</li>
+                <li class="library">库房</li>
+                <li class="record">事故登记</li>
+                <li class="analyze">藏品分析</li>
+                <li class="user&system">用户和系统管理</li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div id="container" style="min-width:400px;height:400px;margin-top: 50px;"></div>
+<script src="../js/scriptAll.js"></script>
+<script src="jquery_.js"></script>
+<script>
+    $ajax_({
+        url:baseUrl+'/getType',
+        method:'GET',
+        data: {},
+        success:function (data) {
+            data=JSON.parse(data);
+            let type =[];
+            let newData=[];
+            data.forEach((item)=>{
+                if(type.indexOf(item.type)==-1)type.push(item.type);
+            })
+            type.forEach((item)=>{
+                let obj =[];
+                obj[0]=item;
+                obj[1]=0;
+                for(let i = 0;i<data.length;i++){
+                    if(data[i].type==item){
+                        obj[1]++;
+                    }
+                }
+                newData.push(obj)
+            })
+
+            console.log(newData)
+            render(newData);
+        }
+    })
+    function render(data){
+        console.log(data)
+        $(function () {
+            $('#container').highcharts({
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false
+                },
+                title: {
+                    text: '藏品种类占比'
+                },
+                tooltip: {
+                    headerFormat: '{series.name}<br>',
+                    pointFormat: '{point.name}: <b>{point.percentage:.1f}%</b>'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            formatter: function() {
+                                return '<span style="color: ' + this.point.color + '"> 数量：' + this.y + '，占比' + this.percentage.toFixed(1)  + '%</span>';
+                            }
+                        },
+                        showInLegend: true  // 显示在图例中
+                    }
+                },
+                series: [{
+                    type: 'pie',
+                    name: '藏品种类',
+                    data:data,
+                }]
+            });
+        });
+
+    }
+
+</script>
+<script src="Highcharts-9.0.1/code/highcharts.js"></script>
+
+</body>
+</html>

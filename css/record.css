@@ -1,0 +1,99 @@
+h2{
+    text-align: center;
+    margin-top: 100px;
+}
+.content{
+    position: relative;
+    padding-top:0.1px;
+}
+.addRecord,.filler{
+    width: 200px;
+    height: 40px;
+    border: 1px solid #af264d;
+    border-radius: 6px;
+    font-size: 16px;
+    position: absolute;
+    left: 350px;
+    top: 650px;
+}
+.filler{
+    left: 650px;
+}
+.add,.deal{
+    position: absolute;
+    width: 450px;
+    left: 32%;
+    top: 120px;
+    font-size: 20px;
+    height: 0px;
+    background-color: rgb(229,229,229);
+    overflow: hidden;
+    border-radius: 20px ;
+    transition: all 0.3s;
+    z-index: 3;
+}
+.add>div,.deal>div{
+    margin-top: 20px;
+}
+.locAdd{
+    height: 480px;
+}
+.locDeal{
+    height: 400px;
+}
+.label{
+    display: inline-block;
+    width: 100px;
+    text-align: center;
+    height: 40px;
+    margin-left: 20px;
+}
+form input  {
+    height: 30px;
+    width: 250px;
+    border-radius: 10px;
+    text-indent: 5px;
+    border: 1px solid #af264d;
+}
+textarea{
+    border-radius: 10px;
+    border: 1px solid #af264d;
+    width: 250px;
+    text-indent: 5px;
+    font-size: 16px;
+
+}
+button {
+    margin-top: 20px;
+    width: 100px;
+    height: 30px;
+    border: 1px solid #af264d;
+    border-radius: 10px;
+}
+.ensure,.ensure_{
+    margin-left: 120px;
+}
+.cancel,.cancel_{
+    margin-left: 40px;
+}
+
+.accidents{
+    padding: 20px;
+    width: 800px;
+    height: 600px;
+    background-color: rgba(238, 238, 238, 0.62);
+    position: absolute;
+    top: 40px;
+    left: 20%;
+    overflow: auto;
+    font-size: 24px;
+}
+.accidents li{
+    padding: 10px;
+    white-space: nowrap;
+    border-bottom: 1px solid #af264d;
+}
+.dealRecord{
+    float: right;
+    margin: 0;
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/styleAll.css">
+    <link rel="stylesheet" href="./font_2167033_whtd30rdjz/iconfont.css">
+    <link rel="stylesheet" href="../css/detail.css">
+</head>
+<style>
+
+</style>
+<body>
+<nav>
+    <div class="container">
+        <div class="head_top">
+            <div class="login">
+                <span>登录 / 注册 </span>
+                <span class="iconfont" style="font-size: 20px">&#xe618;</span>
+            </div>
+        </div>
+        <div class="head_bottom">
+            <div>Zou's Museum</div>
+            <ul class="items">
+                <li class="index">首页</li>
+                <li class="myCollections">我的藏品</li>
+                <li class="library">库房</li>
+                <li class="record">事故登记</li>
+                <li class="analyze">藏品分析</li>
+                <li class="user&system">用户和系统管理</li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="bg"></div>
+<div class="container content">
+
+</div>
+<div class="foot"></div>
+<script src="../js/scriptAll.js"></script>
+<script>
+    let content = document.querySelector('.content');
+    $ajax_({
+        url: baseUrl + '/detail',
+        method: 'GET',
+        data: {
+            id: sessionStorage.getItem('id'),
+        },
+        success: function (data) {
+            data = JSON.parse(data);
+            let template = `
+        <div class="left">
+            <img src="${data.img_url}" alt="" ">
+        </div>
+        <div class="right">
+            <h1>${data.name}</h1>
+            <p><label>藏品ID</label><span>${data.id}</span></p>
+            <p><label>分类</label><span>${data.type}</span></p>
+            <p><label>年代</label><span>${data.age}</span></p>
+            <p><label>完整度</label><span>${data.integrity}</span></p>
+            <p><label>尺寸</label><span>${data.size}</span></p>
+            <p><label>介绍</label><span>${data.describe}</span></p>
+        </div>
+        <img class="view" src="${data.img_url}">`
+            content.innerHTML = template;
+            let flag = false;
+            let view = document.querySelector('.view');
+            let img = document.querySelector('.left img');
+            img.onclick = function () {
+                flag = !flag;
+                view.style.display = flag ? 'block' : 'none';
+            }
+            view.onclick = function () {
+                this.style.display = 'none';
+            }
+        }
+    })
+</script>
+</body>
+</html>

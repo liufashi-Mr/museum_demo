@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/styleAll.css">
+    <link rel="stylesheet" href="./font_2167033_whtd30rdjz/iconfont.css">
+    <link rel="stylesheet" href="../css/user&system.css">
+</head>
+<body>
+<nav>
+    <div class="container">
+        <div class="head_top">
+            <div class="login">
+                <span>登录 / 注册 </span>
+                <span class="iconfont" style="font-size: 20px">&#xe618;</span>
+            </div>
+        </div>
+        <div class="head_bottom">
+            <div>Zou's Museum</div>
+            <ul class="items">
+                <li class="index">首页</li>
+                <li class="myCollections">我的藏品</li>
+                <li class="library">库房</li>
+                <li class="record">事故登记</li>
+                <li class="analyze">藏品分析</li>
+                <li class="user&system">用户和系统管理</li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container content">
+    <div class="left">
+        <div class="user"><img src="../images/user.jpg" alt=""></div>
+        <div class="desc"></div>
+        <h2></h2>
+    </div>
+    <div class="right">
+        <ul class="admin">
+
+        </ul>
+    </div>
+</div>
+<script src="../js/scriptAll.js"></script>
+<script>
+    let desc = document.querySelector('.desc');
+    let h2 = document.querySelector('h2');
+    let admin = document.querySelector('.admin');
+    let flag = sessionStorage.getItem('token');
+    let right = document.querySelector('.right');
+    let left =document.querySelector('.left');
+    let content = document.querySelector('.content')
+    if (flag && flag == 'Mr.zou') {
+        desc.innerHTML = '管理员' + sessionStorage.getItem('token');
+        right.style.display = 'block';
+        let button = document.createElement('button');
+        button.innerHTML = '管理';
+        button.className = 'manage';
+        h2.appendChild(button);
+        h2.style.textAlign='center';
+        $ajax_({
+            url: baseUrl + '/admin',
+            method: 'GET',
+            data: {},
+            success: function (data) {
+                data = JSON.parse(data).username;
+                let template = '';
+                for (let i = 0; i < data.length; i++) {
+                    template += `<li>${data[i].username}<span class="del" data-username="${data[i].username}">x</span></li>`;
+                }
+                admin.innerHTML = template;
+                let dels=document.getElementsByClassName('del');
+                let flag_=false;
+                button.addEventListener('click', function () {
+                    if(!flag_){
+                        for(let i =0 ;i<dels.length;i++){
+                            dels[i].style.display='block';
+                            dels[i].onclick=function () {
+                                console.log(this.parentElement);
+                                this.parentElement.style.display='none';
+                                $ajax_({
+                                    url:baseUrl+'/delUser',
+                                    method: 'GET',
+                                    data:{
+                                        username:this.getAttribute('data-username'),
+                                    },
+                                    success:function (data) {
+                                        console.log(data)
+                                    }
+                                })
+                            }
+                        }
+                    }else{
+                        for(let i =0 ;i<dels.length;i++){
+                            dels[i].style.display='none';
+                        }
+                    }
+                    flag_=!flag_;
+
+                });
+            }
+        })
+    } else if (flag && flag != 'Mr.zou') {
+        desc.innerHTML = '用户' + sessionStorage.getItem('token');
+        h2.style.width='800px';
+        h2.style.marginLeft='-55px'
+        content.style.transform='translate(35%)';
+        h2.innerHTML = 'welcome ' + sessionStorage.getItem('token') + " to Mr.zou's Museum"
+    } else {
+        content.style.transform='translate(35%)';
+        desc.innerHTML = '请先登录!'
+    }
+</script>
+</body>
+</html>

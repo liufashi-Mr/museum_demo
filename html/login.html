@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/styleAll.css">
+    <link rel="stylesheet" href="./font_2167033_whtd30rdjz/iconfont.css">
+    <link rel="stylesheet" href="../css/login.css">
+</head>
+<style>
+    body {
+        background-color: rgb(229, 229, 229);
+    }
+</style>
+<body>
+<nav>
+    <div class="container">
+        <div class="head_top">
+            <div class="login">
+                <span>登录 / 注册 </span>
+                <span class="iconfont" style="font-size: 20px">&#xe618;</span>
+            </div>
+        </div>
+        <div class="head_bottom">
+            <div>Zou's Museum</div>
+            <ul class="items">
+                <li class="index">首页</li>
+                <li class="myCollections">我的藏品</li>
+                <li class="library">库房</li>
+                <li class="record">事故登记</li>
+                <li class="analyze">藏品分析</li>
+                <li class="user&system">用户和系统管理</li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<form class="container main">
+    <h2>登录到 Mr.Zou's Museum</h2>
+    <h2>SIGN IN</h2>
+    <div class="content">
+        <div class="left">
+            <input type="text" placeholder="请输入用户名" class="username">
+            <input type="password" placeholder="请输入密玛" class="password">
+            <input type="button" value="登录" class="button">
+            <div class="register">没有账号？注册</div>
+        </div>
+        <div class="right">
+            <label id="user">我是用户</label>
+            <label id="admin">&nbsp;&nbsp;&nbsp;我是管理员</label>
+            <div class="delta"></div>
+        </div>
+    </div>
+</form>
+<script src="../js/scriptAll.js"></script>
+<!--效果处理-->
+<script>
+    let register = document.querySelector('.register');
+    let username = document.querySelector('.username');
+    let password = document.querySelector('.password');
+    let button = document.querySelector('.button');
+    let user = document.querySelector('#user');
+    let delta = document.querySelector('.delta');
+    let admin = document.querySelector('#admin');
+    let flag = true;
+    let check = true;
+    register.onclick = function () {
+        if (flag) {
+            this.innerHTML = '已有账号,登录';
+            button.value = '注册并登录'
+        } else {
+            this.innerHTML = '没有账号？注册';
+            button.value = '登录'
+        }
+        flag = !flag;
+        button.onclick = login_register;
+    }
+
+    user.onclick = function () {
+        delta.style.top = '105px';
+        register.style.display = 'block';
+        check = true;
+    }
+    admin.onclick = function () {
+        delta.style.top = '147px';
+        register.style.display = 'none';
+        register.innerHTML = '没有账号？注册';
+        button.value = '登录';
+        flag = true;
+        check = false;
+        // alert('如果你已经是管理员请登录,这里只能注册用户账号!');
+        button.onclick = login_register;
+    }
+    function login_register(e) {
+        e.preventDefault();
+        if (flag && check) userLogin();
+        if (flag && !check) adminLogin();
+        if (!flag && check) userRegister();
+    }
+</script>
+<!--用户登录-->
+<script>
+    button.onclick = function (e) {
+        e.preventDefault();
+        userLogin()
+    }
+
+    function userLogin() {
+        $ajax_({
+            url: baseUrl + '/userLogin',
+            method: 'GET',
+            data: {
+                username: username.value,
+                password: password.value
+            },
+            success: function (data) {
+                data = JSON.parse(data);
+                console.log(data)
+                if (data.code) {
+                    console.log(data.username);
+                    sessionStorage.setItem('token', data.username);
+                    location.href = 'index.html';
+                } else {
+                    alert('账号不存在或者密码错误!')
+                }
+            }
+        })
+    }
+</script>
+<!--用户注册-->
+<script>
+    function userRegister() {
+        let reg = /[\w]{6,15}/;
+        if(!reg.test(username.value)||!reg.test(password.value)){
+            alert('用户名密码为6-15位,数字字母下划线');
+            return
+        }
+        $ajax_({
+            url: baseUrl + '/userRegister',
+            method: 'GET',
+            data: {
+                username: username.value,
+                password: password.value
+            },
+            success: function (data) {
+                data=JSON.parse(data);
+                console.log(data)
+                if(data.code)userLogin();
+                if(!data.code)alert('账号已存在');
+            }
+        })
+    }
+</script>
+<!--管理登录-->
+<script>
+    function adminLogin() {
+        $ajax_({
+            url: baseUrl + '/adminLogin',
+            method: 'GET',
+            data: {
+                username: username.value,
+                password: password.value
+            },
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.code) {
+                    console.log(data.username);
+                    sessionStorage.setItem('token', data.username);
+                    location.href = 'index.html';
+                } else {
+                    alert('账号不存在或者密码错误!')
+                }
+            }
+        })
+    }
+</script>
+</body>
+</html>

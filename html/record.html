@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/styleAll.css">
+    <link rel="stylesheet" href="./font_2167033_whtd30rdjz/iconfont.css">
+    <link rel="stylesheet" href="../css/record.css">
+</head>
+<body>
+<nav>
+    <div class="container">
+        <div class="head_top">
+            <div class="login">
+                <span>登录 / 注册 </span>
+                <span class="iconfont" style="font-size: 20px">&#xe618;</span>
+            </div>
+        </div>
+        <div class="head_bottom">
+            <div>Zou's Museum</div>
+            <ul class="items">
+                <li class="index">首页</li>
+                <li class="myCollections">我的藏品</li>
+                <li class="library">库房</li>
+                <li class="record">事故登记</li>
+                <li class="analyze">藏品分析</li>
+                <li class="user&system">用户和系统管理</li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container content">
+    <h2></h2>
+    <form action="" class="add">
+        <div><span class="label">name:</span><input type="text" id="name"></div>
+        <div><span class="label">id:</span><input type="text" id="id"></div>
+        <div><span class="label">problem:</span><textarea name="" id="problem" cols="30" rows="10"></textarea></div>
+        <div><span class="label">solve:</span><input type="text" id="solve" value="待解决"></div>
+        <button class="ensure">确定</button>
+        <button class="cancel">取消</button>
+    </form>
+    <form action="" class="deal">
+        <div><span class="label">问题描述:</span><textarea name="" id="problemDesc" cols="30" rows="10"></textarea></div>
+        <div><span class="label">负责人:</span><input type="text" id="fName"></div>
+        <div><span class="label">完整度:</span><input type="text" id="integrity"></div>
+        <button class="ensure_">确定</button>
+        <button class="cancel_">取消</button>
+    </form>
+    <div class="accidents"></div>
+    <button class="addRecord">登记</button>
+    <button class="filler">只看未解决</button>
+</div>
+<script src="../js/scriptAll.js"></script>
+<script>
+    let h2 = document.querySelector('h2');
+    let add = document.querySelector('.add');
+    let deal = document.querySelector('.deal')
+    let addRecord = document.querySelector('.addRecord');
+    let filler = document.querySelector('.filler');
+    let name = document.getElementById('name');
+    let solve = document.getElementById('solve');
+    let id = document.getElementById('id');
+    let fName = document.getElementById('fName');
+    let integrity = document.getElementById('integrity');
+    let problem = document.getElementById('problem');
+    let ensure = document.querySelector('.ensure');
+    let cancel = document.querySelector('.cancel');
+    let ensure_ = document.querySelector('.ensure_');
+    let cancel_ = document.querySelector('.cancel_');
+    let accidents = document.querySelector('.accidents');
+    let problemDesc =document.querySelector('#problemDesc');
+    if (sessionStorage.getItem('token') == 'Mr.zou') {
+        h2.style.display = 'none';
+        getAccident();
+        addRecord.onclick = function () {
+            add.className += ' locAdd';
+            this.style.display = 'none';
+        }
+        let flag = true;
+        filler.onclick = function () {
+            if (flag) {
+                $ajax_({
+                    url: baseUrl + '/getAccident',
+                    method: 'GET',
+                    data: {},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        let template = '';
+                        for (let i = 0; i < data.length; i++) {
+                            if (data[i].solve == '待解决') {
+                                template += `<li data-id="${data[i].id}">藏品:&nbsp;${data[i].name}&nbsp;&nbsp;编号:${data[i].id} ${data[i].solve} <button class="dealRecord">处理</button></li>`;
+                            }
+                        }
+                        accidents.innerHTML = template;
+                    }
+                });
+                this.innerHTML = '查看全部';
+            } else {
+                getAccident();
+                this.innerHTML = '只看未解决'
+            }
+            flag = !flag;
+        }
+        cancel.onclick = function (e) {
+            e.preventDefault();
+            getAccident();
+            add.className = 'add';
+            addRecord.style.display = 'block';
+        }
+        ensure.onclick = function (e) {
+            e.preventDefault();
+            $ajax_({
+                url: baseUrl + '/addAccident',
+                method: 'GET',
+                data: {
+                    name: name.value,
+                    id: id.value,
+                    problem: problem.value,
+                    solve: solve.value,
+                },
+                success: function (data) {
+                    data = JSON.parse(data);
+                    data.code ? alert('添加成功,等待处理') : alert('该藏品存在或信息错误!');
+                }
+            })
+        }
+        cancel_.onclick = function (e) {
+            e.preventDefault();
+            getAccident();
+            deal.className = 'deal';
+        }
+        accidents.onclick = function (event) {
+            event = event || window.event;
+            let target = event.target || event.srcElement;
+            if (target.className == 'dealRecord') {
+                $ajax_({
+                    url: baseUrl + '/problem',
+                    method: 'GET',
+                    data: {
+                        id:target.parentElement.getAttribute('data-id'),
+                    },
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(problemDesc)
+                        problemDesc.value=data[0].problem;
+                    }
+                })
+                deal.className += ' locDeal';
+                ensure_.onclick = function (e) {
+                    e.preventDefault();
+                    if(!fName.value||!integrity.value){
+                        alert('负责人和完整度不能为空!');
+                        return
+                    }
+                    $ajax_({
+                        url: baseUrl + '/dealAccident',
+                        method: 'GET',
+                        data: {
+                            id:target.parentElement.getAttribute('data-id'),
+                            fName: fName.value,
+                            integrity: integrity.value,
+                        },
+                        success: function () {
+                            alert('操作成功!')
+                            deal.className='deal';
+                            getAccident();
+                        }
+                    })
+                }
+            }
+        }
+    } else if (sessionStorage.getItem('token') != 'Mr.zou') {
+        h2.innerHTML = '您不具备该权限!';
+        addRecord.style.display = 'none';
+        filler.style.display='none';
+    }
+
+
+    function getAccident() {
+        $ajax_({
+            url: baseUrl + '/getAccident',
+            method: 'GET',
+            data: {},
+            success: function (data) {
+                data = JSON.parse(data);
+                let template = '';
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i].solve == '待解决') {
+                        template += `<li data-id="${data[i].id}">藏品:&nbsp;${data[i].name}&nbsp;&nbsp;编号:${data[i].id} ${data[i].solve} <button class="dealRecord">处理</button></li>`;
+                    } else {
+                        template += `<li data-id="${data[i].id}">藏品:&nbsp;${data[i].name}&nbsp;&nbsp;编号:${data[i].id} ${data[i].solve} `;
+                    }
+                }
+                accidents.innerHTML = template;
+            }
+        })
+    }
+</script>
+</body>
+</html>
